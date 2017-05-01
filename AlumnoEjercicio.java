@@ -45,11 +45,11 @@ public class AlumnoEjercicio {
 		return this.matricula;
 	}
 	
-	public void setId(int id_ejercicio){
+	public void setId(String id_ejercicio){
 		this.id_ejercicio = id_ejercicio;
 	}
 	
-	public int getId(){
+	public String getId(){
 		return this.id_ejercicio;
 	}
 	
