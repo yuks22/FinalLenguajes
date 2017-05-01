@@ -11,11 +11,10 @@ public class AlumnoEjercicio {
 	public Date fecha_inic;
 	public Date fecha_fin;
 	
-	private double calcularTiempo(){
-		//Como?
-		double tiempo=0; 
-		
-		return tiempo;
+	private static long calcularTiempo(Date fecha_inic, Date fecha_fin){	
+		//posible solucion
+		long tiempo = fecha_fin.getTime() - fecha_inic.getTime();
+	    return TimeUnit.DAYS.convert(tiempo, TimeUnit.MILLISECONDS);
 	}
 	
 	private void iniciarEjercicio(){
