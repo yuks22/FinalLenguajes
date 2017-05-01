@@ -1,8 +1,8 @@
 package SistemaRecomendaciones;
 
 public class AlumnoAsignatura {
-	public int id_asingtura;
-	public String matricula;
+	private int id_asingtura;
+	private String matricula;
 	public double promedio;
 	
 	private double obtenerPromedio(){
@@ -10,5 +10,21 @@ public class AlumnoAsignatura {
 		double promedioA=0; 
 		
 		return promedioA;
+	}
+	
+	public void setMatricula(String matricula){
+		this.matricula = matricula;
+	}
+	
+	public String getMatricula(){
+		return this.matricula;
+	}
+	
+	public void setId(int id_asingtura){
+		this.id_asingtura = id_asingtura;
+	}
+	
+	public int getId(){
+		return this.id_asingtura;
 	}
 }

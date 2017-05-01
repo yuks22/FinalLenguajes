@@ -3,8 +3,8 @@ package SistemaRecomendaciones;
 import java.util.*;
 
 public class AlumnoEjercicio {
-	public String id_ejercicio;
-	public String matricula;
+	private String id_ejercicio;
+	private String matricula;
 	public int estado;
 	public int calificacion;
 	public int intento;
@@ -35,6 +35,22 @@ public class AlumnoEjercicio {
 		int intentos=0; 
 		
 		return intentos;
-	}	
+	}
+	
+	public void setMatricula(String matricula){
+		this.matricula = matricula;
+	}
+	
+	public String getMatricula(){
+		return this.matricula;
+	}
+	
+	public void setId(int id_ejercicio){
+		this.id_ejercicio = id_ejercicio;
+	}
+	
+	public int getId(){
+		return this.id_ejercicio;
+	}
 	
 }
