@@ -83,11 +83,11 @@ rule "Recomendacion por estado y calif mayor 85"
 		insert(new Recomendacion($ej2));
 end
 
-rule "Recomendacion por estado y calif menor igual 85 y mayor que 70"
+rule "Recomendacion por estado y calif menor igual 85 y mayor o igual que 70"
 	when
 		$a : Alumno()
 		$ej : Ejercicio()
-		$ae: AlumnoEjercicio (estado == 2, calificacion <=85 && calificacion >70, matricula == $a.matricula, id_ejercicio == $e.id_ejercicio)
+		$ae: AlumnoEjercicio (estado == 2, calificacion <=85 && calificacion >= 70, matricula == $a.matricula, id_ejercicio == $e.id_ejercicio)
 		$ej2: Ejercicio(id_ejercicio == $ae.id_ejercicio, tema == $ej.tema, dificultad == $ej.dificultad)
 	then
 		insert(new Recomendacion($ej2));
