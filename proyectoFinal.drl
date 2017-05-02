@@ -103,6 +103,30 @@ rule "Recomendacion por estado y calif menor que 70"
 		insert(new Recomendacion($ej2));
 end
 
+rule "Recomendacion por promedio menor a 85"
+    when
+    	//conditions
+    	$a: Alumno()
+    	$as: Asignatura()
+    	$aa: AlumnoAsignatura(promedio < 85, matricula == $a.matricula, clave == $as.clave )
+    	$ej2: Ejercicio(dificultad <= 4)
+	then
+    	//actions
+   	insert(new Recomendacion($ej2));
+end
+
+rule "Recomendacion por promedio mayor o igual a 85"
+    when
+    	//conditions
+    	$a: Alumno()
+    	$as: Asignatura()
+    	$aa: AlumnoAsignatura(promedio => 85, matricula == $a.matricula, clave == $as.clave )
+    	$ej2: Ejercicio(dificultad == 5)
+	then
+    	//actions
+   	insert(new Recomendacion($ej2));
+end
+
 rule "Alola"
     //include attributes such as "salience" here...
     when
