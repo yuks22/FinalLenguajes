@@ -1,0 +1,104 @@
+//created on: 2/05/2017
+//ESTO SE VA A BORRAR EN LA VERSION DE MAVEN
+package green
+
+//list any import classes here.
+//ESTO SE VA A BORRAR EN LA VERSION DE MAVEN
+declare Alumno
+	matricula : String @key
+	nombre : String @key
+	apellido : String @key
+	semestre : int @key
+	carrera : String @key
+end
+
+//ESTO SE VA A BORRAR EN LA VERSION DE MAVEN
+declare Asignatura
+	clave: String @key
+	nombre : String @key
+	idioma : String @key
+	carrera : String @key
+end
+
+//ESTO SE VA A BORRAR EN LA VERSION DE MAVEN
+declare Ejercicio
+	id_ejercicio : String @key
+	descripcion : String @key
+	nombre : String @key
+	dificultad : int @key
+	tema : String @key
+end
+
+//ESTO SE VA A BORRAR EN LA VERSION DE MAVEN
+declare AlumnoAsignatura
+	matricula : String @key
+	clave: String @key
+	promedio : double @key
+end
+
+//ESTO SE VA A BORRAR EN LA VERSION DE MAVEN
+declare AsignaturaEjercicio
+	clave : String @key
+	id_ejercicio : String @key
+	predecesor : int @key
+end
+
+//ESTO SE VA A BORRAR EN LA VERSION DE MAVEN
+declare AlumnoEjercicio
+    matricula : String @key
+    id_ejercicio : String @key
+    fecha_inic : String @key
+    fecha_fin : String @key
+    estado : int @key
+    calificacion : int @key
+    intento : int @key
+end
+
+declare Recomendacion
+	ejercicio: Ejercicio @key
+end
+//declare any global variables here
+
+
+rule "Recomendacion por intentos"
+
+    when
+        //conditions
+        $a: Alumno()
+        $ej: Ejercicio()
+        $ae: AlumnoEjercicio (intento > 2, matricula == $a.matricula, id_ejercicio == $e.id_ejercicio)
+        $ej2: Ejercicio(id_ejercicio == $ae.id_ejercicio, tema == $ej.tema, dificultad < $ej.dificultad)
+    then
+        //actions
+        insert(new Recomendacion($ej2));
+end
+
+rule "Recomendacion por estado y calif mayor 85"
+	when
+		$a : Alumno()
+		$ej : Ejercicio()
+		$ae: AlumnoEjercicio (estado == 2, calificacion >85, matricula == $a.matricula, id_ejercicio == $e.id_ejercicio)
+		$ej2: Ejercicio(id_ejercicio == $ae.id_ejercicio, tema == $ej.tema, dificultad >= $ej.dificultad)
+	then
+		insert(new Recomendacion($ej2));
+end
+
+rule "Recomendacion por estado y calif menor igual 85 y mayor que 70"
+	when
+		$a : Alumno()
+		$ej : Ejercicio()
+		$ae: AlumnoEjercicio (estado == 2, calificacion <=85 && calificacion >70, matricula == $a.matricula, id_ejercicio == $e.id_ejercicio)
+		$ej2: Ejercicio(id_ejercicio == $ae.id_ejercicio, tema == $ej.tema, dificultad == $ej.dificultad)
+	then
+		insert(new Recomendacion($ej2));
+end
+
+rule "Alola"
+    //include attributes such as "salience" here...
+    when
+        //conditions
+        
+    then
+        //actions
+
+end
