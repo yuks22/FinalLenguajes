@@ -1,40 +1,38 @@
 package SistemaRecomendaciones;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class AlumnoEjercicio {
 	private String id_ejercicio;
 	private String matricula;
-	public int estado;
-	public int calificacion;
-	public int intento;
+	public int estado = 0;
+	public int calificacion = 10;
+	public int intento = 0;
 	public Date fecha_inic;
 	public Date fecha_fin;
 	
-	private double calcularTiempo(){
-		//Como?
-		double tiempo=0; 
-		
-		return tiempo;
+	private static long calcularTiempo(Date fecha_inic, Date fecha_fin){	
+		//posible solucion
+		long tiempo = fecha_fin.getTime() - fecha_inic.getTime();
+	    return TimeUnit.DAYS.convert(tiempo, TimeUnit.MILLISECONDS);
 	}
 	
 	private void iniciarEjercicio(){
-		//que hara?
+		fecha_inic = new Date();
+		estado=1;
 	}
 	private void finalizarEjercicio(){
-		//que hara?
+		fecha_fin = new Date();
+		intento = intento +1;
+		estado = 2;
+
 	}
 	private double calcularCalificacion(){
 		//Como?
 		double calif=0; 
 		
 		return calif;
-	}
-	private int numeroIntentos(){
-		//Como?
-		int intentos=0; 
-		
-		return intentos;
 	}
 	
 	public void setMatricula(String matricula){
@@ -45,11 +43,11 @@ public class AlumnoEjercicio {
 		return this.matricula;
 	}
 	
-	public void setId(int id_ejercicio){
+	public void setId(String id_ejercicio){
 		this.id_ejercicio = id_ejercicio;
 	}
 	
-	public int getId(){
+	public String getId(){
 		return this.id_ejercicio;
 	}
 	
