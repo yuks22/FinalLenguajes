@@ -120,7 +120,7 @@ rule "Recomendacion por promedio mayor o igual a 85"
     	//conditions
     	$a: Alumno()
     	$as: Asignatura()
-    	$aa: AlumnoAsignatura(promedio => 85, matricula == $a.matricula, clave == $as.clave )
+    	$aa: AlumnoAsignatura(promedio >= 85, matricula == $a.matricula, clave == $as.clave )
     	$ej2: Ejercicio(dificultad == 5)
 	then
     	//actions
