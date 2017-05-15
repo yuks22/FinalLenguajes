@@ -1,0 +1,230 @@
+//created on: 2/05/2017
+package green
+
+declare Alumno
+	matricula : String @key
+	nombre : String @key
+	apellido : String @key
+	semestre : int @key
+	carrera : String @key
+end
+
+//ESTO SE VA A BORRAR EN LA VERSION DE MAVEN
+declare Asignatura
+	clave: String @key
+	nombre : String @key
+	idioma : String @key
+	carrera : String @key
+end
+
+//ESTO SE VA A BORRAR EN LA VERSION DE MAVEN
+declare Ejercicio
+	id_ejercicio : String @key
+	descripcion : String @key
+	nombre : String @key
+	dificultad : int @key
+	tema : String @key
+end
+
+//ESTO SE VA A BORRAR EN LA VERSION DE MAVEN
+declare AlumnoAsignatura
+	matricula : String @key
+	clave: String @key
+	promedio : double @key
+end
+
+//ESTO SE VA A BORRAR EN LA VERSION DE MAVEN
+declare AsignaturaEjercicio
+	clave : String @key
+	id_ejercicio : String @key
+	predecesor : String @key
+end
+
+//ESTO SE VA A BORRAR EN LA VERSION DE MAVEN
+declare AlumnoEjercicio
+    matricula : String @key
+    id_ejercicio : String @key
+    fecha_inic : String @key
+    fecha_fin : String @key
+    estado : int @key
+    calificacion : int @key
+    intento : int @key
+end
+
+/*declare Recomendacion
+	ejercicio: Ejercicio @key
+end*/
+
+declare AlumnoRecomendacion 
+	alumno: Alumno @key
+	recomendacion: Ejercicio @key
+end
+//declare any global variables here
+
+rule "hechos"
+	when
+		
+	then
+		Alumno a1 = new Alumno("A01214855", "leo", "campuzano", 8, "ITC");
+		insert(a1);
+		
+		Asignatura as1 = new Asignatura("TC2026", "Lenguajes", "espanol", "ITC");
+		insert(as1);
+		
+		Asignatura as2 = new Asignatura("TC2025", "Matematicas Computacionales", "espanol", "ITC");
+		insert(as2);
+		
+		Ejercicio ej1 = new Ejercicio("E123", "ej1", "NombreEj1", 4, "Drools");
+		insert(ej1);
+		
+		Ejercicio ejrec = new Ejercicio("E223", "ejrecpred", "EjRec", 5, "Drools");
+		insert(ejrec);
+		
+		Ejercicio ejrec2 = new Ejercicio("E323", "ejrec3", "EjRec2", 4, "Drools");
+		insert(ejrec2);
+		
+		AlumnoAsignatura alas1 = new AlumnoAsignatura("A01214855", "TC2026", 69);
+		insert(alas1);
+		
+		AsignaturaEjercicio asej1 = new AsignaturaEjercicio("TC2026", "E123", "TC2025" );
+		insert(asej1);
+		
+		AlumnoEjercicio alej1 = new AlumnoEjercicio("A01214855", "E123", "3 marzo 2014", "10 marzo 2014", 2, 69, 3);
+		insert(alej1);
+
+end
+
+
+rule "Recomendacion por intentos"
+
+    when
+        //conditions
+        $a: Alumno()
+        $ej: Ejercicio()
+        $ae: AlumnoEjercicio (intento > 2, matricula == $a.matricula, id_ejercicio == $ej.id_ejercicio)
+        $ej2: Ejercicio(id_ejercicio != $ae.id_ejercicio, tema == $ej.tema, dificultad < $ej.dificultad)
+    then
+        //actions
+        AlumnoRecomendacion alrec = new AlumnoRecomendacion($a, $ej2);
+   		insert(alrec);
+   		System.out.println("Recomendacion por intentos para: "+ $a.getNombre());
+   		System.out.println("El ejercicio recomendado es" + $ej2.getNombre());
+end
+
+rule "Recomendacion por estado y calif mayor 85" //Gut
+	when
+		$a : Alumno()
+		$ej : Ejercicio()
+		$ae: AlumnoEjercicio (estado == 2, calificacion >85, matricula == $a.matricula, id_ejercicio == $ej.id_ejercicio)
+		$ej2: Ejercicio(id_ejercicio != $ae.id_ejercicio, tema == $ej.tema, dificultad >= $ej.dificultad)
+		//$ej2: Ejercicio(tema == $ej.tema && dificultad >= $ej.dificultad)
+	then
+		AlumnoRecomendacion alrec = new AlumnoRecomendacion($a, $ej2);
+   		insert(alrec);
+   		System.out.println("Recomendacion por estado y calif mayor 85 para: "+ $a.getNombre());
+   		System.out.println("El ejercicio recomendado es" + $ej2.getNombre());
+end
+
+
+rule "Recomendacion por estado y calif menor igual 85 y mayor o igual que 70"//Gut
+	when
+		$a : Alumno()
+		$ej : Ejercicio()
+		$ae: AlumnoEjercicio (estado == 2 && calificacion <=85 && calificacion >= 70 && matricula == $a.matricula && id_ejercicio == $ej.id_ejercicio)
+		$ej2: Ejercicio(id_ejercicio != $ae.id_ejercicio && tema == $ej.tema && dificultad == $ej.dificultad)
+		//$ej2: Ejercicio(tema == $ej.tema && dificultad == $ej.dificultad)
+	then
+		AlumnoRecomendacion alrec = new AlumnoRecomendacion($a, $ej2);
+   		insert(alrec);
+   		System.out.println("Recomendacion  por estado y calif menor igual 85 y mayor o igual que 70 para: "+ $a.getNombre());
+   		System.out.println("El ejercicio recomendado es" + $ej2.getNombre());
+end
+
+
+rule "Recomendacion por estado y calif menor que 70"//Gut
+	when
+		$a : Alumno()
+		$ej : Ejercicio()
+		$ae: AlumnoEjercicio (estado == 2 && calificacion <70 && matricula == $a.matricula && id_ejercicio == $ej.id_ejercicio)
+		$ej2: Ejercicio(id_ejercicio != $ae.id_ejercicio, tema == $ej.tema && dificultad <= $ej.dificultad)
+	then
+		AlumnoRecomendacion alrec = new AlumnoRecomendacion($a, $ej2);
+   		insert(alrec);
+   		System.out.println("Recomendacion por estado y calif menor que 70 para: "+ $a.getNombre());
+   		System.out.println("El ejercicio recomendado es" + $ej2.getNombre());
+end
+
+
+rule "Recomendacion por promedio menor a 85"//Gut
+    when
+    	//conditions
+    	$a: Alumno()
+    	$as: Asignatura()
+    	$aa: AlumnoAsignatura(promedio < 85, matricula == $a.matricula, clave == $as.clave )
+    	$ej2: Ejercicio(dificultad <= 4)
+	then
+    	//actions
+   		AlumnoRecomendacion alrec = new AlumnoRecomendacion($a, $ej2);
+   		insert(alrec);
+   		System.out.println("Recomendacion por promedio menor a 85 para: "+ $a.getNombre());
+   		System.out.println("El ejercicio recomendado es" + $ej2.getNombre());
+end
+
+
+
+
+rule "Recomendacion por promedio mayor o igual a 85"//Gut
+    when
+    	//conditions
+    	$a: Alumno()
+    	$as: Asignatura()
+    	$aa: AlumnoAsignatura(promedio >= 85, matricula == $a.matricula, clave == $as.clave )
+    	$ej2: Ejercicio(dificultad == 5)
+	then
+    	//actions
+   		AlumnoRecomendacion alrec = new AlumnoRecomendacion($a, $ej2);
+   		insert(alrec);
+   		System.out.println("Recomendacion  por promedio mayor o igual a 85 para: "+ $a.getNombre());
+   		System.out.println("El ejercicio recomendado es" + $ej2.getNombre());
+end
+
+
+rule " recomendacion predecesor" //Gut
+    when
+		$a : Alumno()
+		$as : Asignatura()//predecesora
+		$as2 : Asignatura() //actual
+		$alas : AlumnoAsignatura(clave == $as2.clave && $a.matricula == matricula) 
+		$ej : Ejercicio()
+		$ase : AsignaturaEjercicio( id_ejercicio == $ej.id_ejercicio && clave == $alas.clave && predecesor == $as.clave, $alas.promedio <= 70)
+		$ej2 : Ejercicio(id_ejercicio != $ase.id_ejercicio, dificultad >= 0)
+		
+    then
+   		//insert(new AlumnoRecomendacion($a, $ej2));
+   		AlumnoRecomendacion alrec = new AlumnoRecomendacion($a, $ej2);
+   		insert(alrec);
+   		System.out.println("Recomendacion de ejercicio de materia anterior para: "+ $a.getNombre());
+   		System.out.println("El ejercicio recomendado es " + $ej2.getNombre()+ "de la materia " + $as.getNombre());
+end
+
+
+
+
+
+
+
+
+/*function String imprimeSolucion(AlumnoRecomoendacion alrec){
+
+	if(e.getEstadoAnt() == null)
+		return "";
+	return imprimeSolucion(e.estadoAnt) + e.getDescripcion();
+}
+
+/*rule "Imprimir recomendaciones"
+	when
+	   $l : AlumnoRecomendacion()
+	then
+		System.out.println("Recomendacion de ejercicio de materia anterior para: "+ $l.getAlumno().getNombre());
+		System.out.println("El ejercicio recomendado es " + $l.getEjercicio().getNombre()+ "de la materia con clave" + $l.getEjercicio().getNombre());
+end*/
